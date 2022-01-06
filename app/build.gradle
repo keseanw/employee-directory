@@ -1,0 +1,126 @@
+plugins {
+    id("com.android.application")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+    id("kotlin-android")
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.block.employeedirectory"
+        minSdk 21
+        targetSdk 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        // Enables Jetpack Compose for this module
+        compose true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.0.4'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation "androidx.activity:activity-ktx:1.4.0"
+    implementation "androidx.fragment:fragment-ktx:1.4.0"
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
+
+    implementation("androidx.compose.ui:ui:1.0.5")
+    // Tooling support (Previews, etc.)
+    implementation("androidx.compose.ui:ui-tooling:1.0.5")
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation("androidx.compose.foundation:foundation:1.0.5")
+    // Integration with activities
+    implementation 'androidx.activity:activity-compose:1.4.0'
+    // Material Design
+    implementation("androidx.compose.material:material:1.0.5")
+    // Material design icons
+    implementation("androidx.compose.material:material-icons-core:1.0.5")
+    implementation("androidx.compose.material:material-icons-extended:1.0.5")
+    // Integration with observables
+    implementation("androidx.compose.runtime:runtime-livedata:1.0.5")
+    implementation("androidx.compose.runtime:runtime-rxjava2:1.0.5")
+
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    // ViewModel utilities for Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0")
+    // LiveData
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
+    // Lifecycles only (without ViewModel or LiveData)
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
+
+    // Saved state module for ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.4.0")
+
+    // Annotation processor
+    kapt("androidx.lifecycle:lifecycle-compiler:2.4.0")
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+
+    // Dagger
+    def daggerVersion = "2.38.1"
+    implementation "com.google.dagger:dagger:${daggerVersion}"
+    kapt "com.google.dagger:dagger-compiler:${daggerVersion}"
+    kapt "com.google.dagger:dagger-android-processor:${daggerVersion}"
+
+    //Dagger Hilt
+    implementation "com.google.dagger:hilt-android:2.40.5"
+    kapt("com.google.dagger:hilt-compiler:2.40.5")
+
+    implementation 'com.jakewharton:disklrucache:2.0.2'
+
+    // Dependencies for local unit tests
+    testImplementation "junit:junit:$test_junit_version"
+    testImplementation "io.mockk:mockk:$test_mockk_version"
+    testImplementation "org.mockito:mockito-core:$test_mockito_version"
+    testImplementation "org.hamcrest:hamcrest-all:$test_hamcrest_version"
+    testImplementation "androidx.arch.core:core-testing:$test_arch_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2"
+    testImplementation "com.google.truth:truth:$test_truth_version"
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    // UI Tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.5")
+}
+
+kapt {
+    correctErrorTypes true
+    generateStubs true
+}
