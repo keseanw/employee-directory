@@ -15,7 +15,6 @@ import org.junit.Test
 
 /**
 * Employee ViewModel Test
- * Tests only
 * */
 @ExperimentalCoroutinesApi
 class EmployeeViewModelTest {
@@ -35,19 +34,22 @@ class EmployeeViewModelTest {
     // Use a fake repository to be injected into the viewModel
     private lateinit var employeeRepository: FakeEmployeeRepository
     private var employeeList: List<Employee> = listOf()
+    private lateinit var perfectEmployee: Employee
 
     @Before
     fun setup() {
         employeeRepository = FakeEmployeeRepository()
         employeeViewModel = EmployeeViewModel(employeeRepository)
 
-        employeeList = listOf(Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
+        perfectEmployee = Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
             name = "Camille Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
             bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME), Employee(uuid = "a98f8a2e-c975-4ba3-8b35-01f719e7de2d",
-            name = "Tom Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME))
+            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME)
+
+
+        employeeList = listOf(perfectEmployee.copy(),
+            perfectEmployee.copy(uuid = "a98f8a2e-c975-4ba3-8b35-01f719e7de2d",
+                name = "Tom Rogers", email = "crogers4.demo@squareup.com"))
 
     }
 
@@ -55,13 +57,9 @@ class EmployeeViewModelTest {
     @Test
     fun `when given a list of employees with 1 missing uuid, filter the employee out of the list`() {
 
-        val malformedEmployeeUuidList = listOf(Employee(uuid = null,
-            name = "Camille Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME), Employee(uuid = "a98f8a2e-c975-4ba3-8b35-01f719e7de2d",
-            name = "Tom Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME))
+        val malformedEmployee = perfectEmployee.copy(uuid = null)
+        val validEmployee = perfectEmployee.copy(name = "Tom Rogers")
+        val malformedEmployeeUuidList = listOf(malformedEmployee, validEmployee)
 
         val removedMalformedEmployeeData = employeeViewModel.removeEmployeesThatMatchFilters(malformedEmployeeUuidList)
 
@@ -72,14 +70,10 @@ class EmployeeViewModelTest {
     @Test
     fun `when given a list of employees with 1 missing name, filter the employee out of the list`() {
 
-        val malformedEmployeeNameList = listOf(Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
-            name = null, phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME), Employee(uuid = "a98f8a2e-c975-4ba3-8b35-01f719e7de2d",
-            name = "Tom Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME))
-
+        val malformedEmployee = perfectEmployee.copy(name = null)
+        val validEmployee = perfectEmployee.copy(name = "Tom Rogers")
+        val malformedEmployeeNameList = listOf(malformedEmployee, validEmployee)
+        
         val removedMalformedEmployeeData = employeeViewModel.removeEmployeesThatMatchFilters(malformedEmployeeNameList)
 
         Truth.assertThat(removedMalformedEmployeeData[0].name).isEqualTo("Tom Rogers")
@@ -89,13 +83,9 @@ class EmployeeViewModelTest {
     @Test
     fun `when given a list of employees with 1 missing email, filter the employee out of the list`() {
 
-        val malformedEmployeeEmailList = listOf(Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
-            name = "Camille Rogers", phoneNumber = "5558531970", email = null,
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME), Employee(uuid = "a98f8a2e-c975-4ba3-8b35-01f719e7de2d",
-            name = "Tom Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME))
+        val malformedEmployee = perfectEmployee.copy(email = null)
+        val validEmployee = perfectEmployee.copy(name = "Tom Rogers")
+        val malformedEmployeeEmailList = listOf(malformedEmployee, validEmployee)
 
         val removedMalformedEmployeeData = employeeViewModel.removeEmployeesThatMatchFilters(malformedEmployeeEmailList)
 
@@ -106,13 +96,9 @@ class EmployeeViewModelTest {
     @Test
     fun `when given a list of employees with 1 missing team, filter the employee out of the list`() {
 
-        val malformedEmployeeTeamList = listOf(Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
-            name = "Camille Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "", employeeType = EmployeeType.PART_TIME), Employee(uuid = "a98f8a2e-c975-4ba3-8b35-01f719e7de2d",
-            name = "Tom Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME))
+        val malformedEmployee = perfectEmployee.copy(team = null)
+        val validEmployee = perfectEmployee.copy(name = "Tom Rogers")
+        val malformedEmployeeTeamList = listOf(malformedEmployee, validEmployee)
 
         val removedMalformedEmployeeData = employeeViewModel.removeEmployeesThatMatchFilters(malformedEmployeeTeamList)
 
@@ -123,13 +109,9 @@ class EmployeeViewModelTest {
     @Test
     fun `when given a list of employees with 1 missing employeeType, filter the employee out of the list`() {
 
-        val malformedEmployeeTypeList = listOf(Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
-            name = "Camille Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Designer on the web marketing team.", employeeType = null), Employee(uuid = "a98f8a2e-c975-4ba3-8b35-01f719e7de2d",
-            name = "Tom Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME))
+        val malformedEmployee = perfectEmployee.copy(employeeType = null)
+        val validEmployee = perfectEmployee.copy(name = "Tom Rogers")
+        val malformedEmployeeTypeList = listOf(malformedEmployee, validEmployee)
 
         val removedMalformedEmployeeData = employeeViewModel.removeEmployeesThatMatchFilters(malformedEmployeeTypeList)
 
@@ -140,13 +122,10 @@ class EmployeeViewModelTest {
     @Test
     fun `when given a list of employees with matching uuids, filter the employee out of the list`() {
 
-        val malformedEmployeeTypeList = listOf(Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
-            name = "Camille Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Designer on the web marketing team.", employeeType = null), Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
-            name = "Tom Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME))
+        val malformedEmployee = perfectEmployee.copy(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c")
+        val malformedEmployee2 = perfectEmployee.copy(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
+            name = "Tom Rogers")
+        val malformedEmployeeTypeList = listOf(malformedEmployee, malformedEmployee2)
 
         val removedMalformedEmployeeData = employeeViewModel.getDistinctEmployeeUuid(malformedEmployeeTypeList)
 
@@ -157,13 +136,10 @@ class EmployeeViewModelTest {
     @Test
     fun `when given a list of employees with matching emails, filter the employee out of the list`() {
 
-        val malformedEmployeeTypeList = listOf(Employee(uuid = "0d8fcc13-4d0c-425c-8355-390b312b909c",
-            name = "Camille Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Designer on the web marketing team.", employeeType = null), Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
-            name = "Tom Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME))
+        val malformedEmployee = perfectEmployee.copy(email = "crogers.demo@squareup.com")
+        val malformedEmployee2 = perfectEmployee.copy(email = "crogers.demo@squareup.com",
+            name = "Tom Rogers")
+        val malformedEmployeeTypeList = listOf(malformedEmployee, malformedEmployee2)
 
         val removedMalformedEmployeeData = employeeViewModel.getDistinctEmployeeEmail(malformedEmployeeTypeList)
 
@@ -174,13 +150,12 @@ class EmployeeViewModelTest {
     @Test
     fun `when given a list of employees with both matching emails & uuids, filter the employees out of the list`() {
 
-        val malformedEmployeeTypeList = listOf(Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
-            name = "Camille Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Designer on the web marketing team.", employeeType = null), Employee(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
-            name = "Tom Rogers", phoneNumber = "5558531970", email = "crogers.demo@squareup.com",
-            bio = "Designer on the web marketing team.", photoSmall = "https://s3.amazonaws.com/sq-mobile-interview/photos/",
-            photoLarge = "https://s3.amazonaws.com/sq-mobile-interview/photos/", team = "Public Web & Marketing", employeeType = EmployeeType.PART_TIME))
+        val malformedEmployee = perfectEmployee.copy(uuid = "0d8fcc12-4d0c-425c-8355-390b312b909c",
+            email = "crogers.demo@squareup.com")
+        val malformedEmployee2 = perfectEmployee.copy( "0d8fcc12-4d0c-425c-8355-390b312b909c",
+            email = "crogers.demo@squareup.com",
+            name = "Tom Rogers")
+        val malformedEmployeeTypeList = listOf(malformedEmployee, malformedEmployee2)
 
         val removedMalformedEmployeeData = employeeViewModel.getDistinctEmployeeEmail(malformedEmployeeTypeList).also { employeeViewModel.getDistinctEmployeeUuid(it) }
 
